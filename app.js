@@ -132,6 +132,47 @@ const showDitails = (photo) => {
 
 // হয় মডিউল ৩৩ ভালো করে দেখে ফেলো। বিশেষ করে the meal db রিলেটেড ৩৩-৫ থেকে ৩৩-৮ পর্যন্ত। তারপরে আরো সময় থাকলে এর আরেকটা খালতো ভাই the coktaildb থেকে কিছু জিনিস এনে দেখাবে। একজাক্টলি কি দেখাতে হবে। সেটা আমি বলে দিবো না। তুমি ওদের ওয়েবসাইট এ যাও। সেখানে কি কি লেখা আছে সেগুলা পড়ো। api গুলা এর ছোট করে কি কি করে বলা আছে। সেগুলা দেখো। তারপর কিছু ডাটা লোড করো। সেই ডাটাগুলো দেখাও। এইখানে সার্চ ফাংশনালিটি ইমপ্লিমেন্ট করো। অনেকটা mealdb এর মতো। আবার কোন একটাতে ক্লিক করলে সেটার ডিটেল দেখাবে। 
 
+const getDrenk = () => {
+    const inputValue = document.getElementById('input-drinks').value;
+    document.getElementById('spinner').classList.remove('d-none');
+    fetch(`https://www.thecocktaildb.com/api/json/v1/1/search.php?f=${inputValue}`)
+    .then(res => res.json())
+    .then(data => loadDitails(data.drinks))
+}
+
+const loadDitails = (drinks) => {
+    const drinkShow = document.getElementById('drinks-show');
+    drinkShow.innerHTML = "";
+    drinks.forEach(drink => {
+        const div = document.createElement('div');
+        div.innerHTML = `
+            <img onclick ="showDrinksDitails('${drink.idDrink}')" class="card-img-top" src="${drink.strDrinkThumb}" alt="">
+            <h1>${drink.strDrink}</h1>
+            <h3>${drink.strGlass}</h3>
+            <p>${drink.strInstructions.slice(0, 150)}</p>
+        `;
+        document.getElementById('spinner').classList.add('d-none');
+        div.classList.add('col');
+        drinkShow.appendChild(div);
+    });
+}
+
+const showDrinksDitails = (id) => {
+    fetch(`https://www.thecocktaildb.com/api/json/v1/1/lookup.php?i=${id}`)
+    .then(res => res.json())
+    .then(data => setDitailsDrinks(data.drinks[0]))
+}
+
+const setDitailsDrinks = (drink) => {
+    document.getElementById('detail-photo').innerHTML = document.createElement('div').innerHTML = `
+        <img src="${drink.strDrinkThumb}">
+        <h1>${drink.strDrink}</h1>
+        <h3>${drink.strGlass}</h3>
+        <h5>${drink.strCategory}</h5>
+        <p>${drink.strInstructions}</p>
+        <span>Ingredient : ${drink.strIngredient1}, ${drink.strIngredient2}, ${drink.strIngredient3}, ${drink.strIngredient4}</span>
+    `;
+}
 
 
 // এসাইনমেন্ট ৬ প্রিপারেশন: 
